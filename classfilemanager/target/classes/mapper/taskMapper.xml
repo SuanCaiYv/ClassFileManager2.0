@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.classfilemanager.org.dao.TaskMapper">
+    <resultMap id="task" type="com.classfilemanager.org.pojo.Task">
+        <id column="task_uuid" property="taskUuid" jdbcType="VARCHAR" javaType="String"/>
+        <result column="luncher_id" property="luncherId" jdbcType="VARCHAR" javaType="String"/>
+        <result column="lunch_time" property="lunchTime" jdbcType="BIGINT" javaType="Long"/>
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="task_path" property="taskPath" jdbcType="VARCHAR" javaType="String"/>
+        <result column="format" property="format" jdbcType="INTEGER" javaType="Integer"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.classfilemanager.org.pojo.Task">
+        insert into task (task_uuid, luncher_id, lunch_time, task_name, task_path, format) VALUES
+                (#{taskUuid}, #{luncherId}, #{lunchTime}, #{taskName}, #{taskPath}, #{format})
+    </insert>
+    <update id="update" parameterType="com.classfilemanager.org.pojo.Task">
+        update task set task_uuid = #{taskUuid}, luncher_id = #{luncherId}, lunch_time = #{lunchTime},
+                        task_name = #{taskName}, task_path = #{taskPath}, format = #{format}
+    </update>
+    <delete id="delete">
+        delete from task where task_uuid = #{taskUuid}
+    </delete>
+    <select id="selectOne" resultType="com.classfilemanager.org.dao.OrganizationMapper" parameterType="String">
+        select * from task where task_uuid = #{taskUuid}
+    </select>
+    <select id="selectToDelete" resultType="com.classfilemanager.org.pojo.Task">
+        select * from task where lunch_time <![CDATA[<=]]> #{lunchTime}
+    </select>
+</mapper>

@@ -1,0 +1,44 @@
+server:
+  max-http-header-size: 102400
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 4KB
+      max-request-size: 102400MB
+      max-file-size: 102400MB
+  thymeleaf:
+    cache: false
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  profiles:
+    active: dev
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  config-location: classpath:mybatis-config.xml
+
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/classfilemanager2.0
+    username: root
+    password: 461200
+server:
+  port: 8190
+basePath: /home/joker/classfilemanager/
+interval: 7
+
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://localhost:3306/classfilemanager
+    username: classfilemanager
+    password: tKhx6atnsp2FWYrA
+server:
+  port: 10086
+basePath: /home/classfilemanager/
+interval: 7

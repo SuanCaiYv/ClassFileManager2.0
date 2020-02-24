@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.classfilemanager.org.dao.OrganizationMapper">
+    <resultMap id="org" type="com.classfilemanager.org.pojo.Organization">
+        <id column="org_uuid" property="orgUuid" jdbcType="VARCHAR" javaType="String"/>
+        <result column="luncher_id" property="luncherId" jdbcType="VARCHAR" javaType="String"/>
+        <result column="lunch_time" property="lunchTime" jdbcType="BIGINT" javaType="Long"/>
+        <result column="member" property="member" jdbcType="VARCHAR" javaType="String"/>
+        <result column="undo_ids" property="undoIds" jdbcType="VARCHAR" javaType="String"/>
+        <result column="done_ids" property="doneIds" jdbcType="VARCHAR" javaType="String"/>
+        <result column="admin_ids" property="adminIds" jdbcType="VARCHAR" javaType="String"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.classfilemanager.org.pojo.Organization">
+        insert into organization (org_uuid, luncher_id, lunch_time, member, undo_ids, done_ids, admin_ids) VALUES
+            (#{orgUuid}, #{luncherId}, #{lunchTime}, #{member}, #{undoIds}, #{doneIds}, #{adminIds})
+    </insert>
+    <update id="update" parameterType="com.classfilemanager.org.pojo.Organization">
+        update organization set org_uuid = #{orgUuid}, luncher_id = #{luncherId}, lunch_time = #{lunchTime}, member = #{member},
+                                undo_ids = #{undoIds}, done_ids = #{doneIds}, admin_ids = #{adminIds}
+    </update>
+    <delete id="delete">
+        delete from organization where org_uuid = #{orgUuid}
+    </delete>
+    <select id="selectOne" parameterType="String" resultType="com.classfilemanager.org.pojo.Organization">
+        select * from organization where org_uuid = #{orgUuid}
+    </select>
+</mapper>
