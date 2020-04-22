@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function lunch() {
+            var input = document.getElementById('input1');
+            var select = document.getElementById('select1');
+            var taskName = input.value;
+            var format = select.value;
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState === 4 && request.status === 200) {
+                    alert('发布成功');
+                    window.location.href='www.suancaiyv.top/html/main.html';
+                }
+            };
+            var parameter = 'taskName='+taskName+'&format='+format;
+            request.open('POST', 'www.suancaiyv.top:8190/lunchTask', true);
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.withCredentials = true;
+            request.send(parameter);
+        }
+    </script>
+</head>
+<body>
+<div align="center">
+    <form action="">
+        <input type="text" name="taskName" id="input1">
+        <br>
+        <select name="format" id="select1">
+            <option value="*$#">--请选择提交格式--</option>
+            <option value="*$#">文件名-学号-姓名</option>
+            <option value="*#$">文件名-姓名-学号</option>
+            <option value="$#*">学号-姓名-文件名</option>
+            <option value="#$*">姓名-学号-文件名</option>
+            <option value="#$">姓名-学号</option>
+            <option value="$#">学号-姓名</option>
+            <option value="$">学号</option>
+            <option value="#">姓名</option>
+        </select>
+        <br>
+        <input type="button" value="发布" onclick="lunch()">
+    </form>
+</div>
+</body>
+</html>

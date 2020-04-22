@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>main</title>
+    <script src="js/jquery.js"></script>
+    <script>
+        <!--请不要随意更改变量名-->
+        /**
+         * 用户
+         */
+        var user;
+        /**
+         * 用户id
+         */
+        var id;
+        /**
+         * 用户姓名
+         */
+        var name;
+        /**
+         * 用户密码
+         */
+        var password;
+        /**
+         * 用户姓名
+         */
+        var nickName;
+        /**
+         * 用户邮箱
+         */
+        var email;
+        /**
+         * 用户QQ
+         */
+        var qq;
+        /**
+         * 是否是班委
+        var isCommittee;
+        /**
+         * 任务信息
+         */
+        var taskMessage;
+        /**
+         * 未完成的任务的UUID(数组形式)
+         */
+        var undoTasks;
+        /**
+         * 已完成的任务的UUID(数组形式)
+         */
+        var doneTasks;
+        /**
+         * 发布的任务(数组形式)
+         */
+        var lunchTasks;
+        /**
+         * 任务UUID和任务名映射(Map形式: String-String)
+         */
+        var taskUuidAndTaskName;
+        /**
+         * 任务UUID和当前者上传的文件名的映射(Map形式: String-String)
+         */
+        var taskUuidAndFileName;
+        /**
+         * ID和姓名的映射(Map形式: String-String)
+         */
+        var idAndName;
+        /**
+         * 未完成的任务的UUID和未完成的用户的ID的映射(Map-List)
+         */
+        var taskUuidAndUndoIds;
+        /**
+         * 已完成的任务的UUID和已完成的用户的ID的映射(Map-List)
+         */
+        var taskUuidAndDoneIds;
+
+        /**
+         * 解析json字符串的函数
+         * @param json
+         */
+        function parseJson(json) {
+            var jsonObj = $.parseJSON(json);
+            user = jsonObj.data;
+            taskMessage = jsonObj.addData;
+            id = user.id;
+            name = user.name;
+            password = user.password;
+            nickName = user.nickName;
+            email = user.email;
+            qq = user.qq;
+            isCommittee = user.isCommittee;
+            undoTasks = taskMessage.undoTasks;
+            doneTasks = taskMessage.doneTasks;
+            lunchTasks = taskMessage.lunchTasks;
+            taskUuidAndTaskName = taskMessage.taskUuidAndTaskName;
+            taskUuidAndFileName = taskMessage.taskUuidAndFileName;
+            idAndName = taskMessage.idAndName;
+            taskUuidAndUndoIds = taskMessage.taskUuidAndUndoIds;
+            taskUuidAndDoneIds = taskMessage.taskUuidAndDoneIds;
+        }
+    </script>
+    <script>
+        function upload(taskUuid) {
+            var url = 'www.suancaiyv.top:8190/file/upload?taskUuid='+taskUuid;
+            var formData = new FormData();
+            var input = document.getElementById('file'+taskUuid);
+            if (input.files.length === 0) {
+                alert('未选择文件');
+            }
+            else {
+                formData.append('file', input.files[0]);
+                var request = new XMLHttpRequest();
+                request.open('POST', url, true);
+                request.onreadystatechange = function() {
+                    if (request.status === 200 && request.readyState === 4) {
+                        var json = request.responseText;
+                        var result = JSON.parse(json);
+                        if (result.code === 0) {
+                            alert("上传成功")
+                        }
+                        else {
+                            alert("上传失败")
+                        }
+                        localStorage.setItem('json', json);
+                        location.reload();
+                    }
+                };
+                request.withCredentials = true;
+                request.send(formData);
+            }
+        }
+        function download(taskUuid) {
+            var url = 'www.suancaiyv.top:8190/file/download';
+
+            var form = $('<form>');
+            form.attr('style', 'display:none');
+            form.attr('target', '');
+            form.attr('method', 'post');
+            form.attr('action', url);
+
+            var input1 = $('<input>');
+            input1.attr('style', 'display:none');
+            input1.attr('name', 'taskUuid');
+            input1.attr('value', taskUuid);
+
+            $('body').append(form);
+            form.append(input1);
+
+            form.submit();
+            form.remove();
+        }
+        function viewTask(taskUuid) {
+            localStorage.setItem('taskUuid', taskUuid);
+            window.location = 'www.suancaiyv.top/html/viewTask.html';
+        }
+        function deleteTask(taskUuid) {
+            if (confirm("确定删除吗?")) {
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if (request.status === 200 && request.readyState === 4) {
+                        var json = request.responseText;
+                        localStorage.setItem('json', json);
+                        location.reload();
+                    }
+                };
+                parameter = 'taskUuid='+taskUuid;
+                request.open('POST', "www.suancaiyv.top:8190/deleteTask", true);
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.withCredentials = true;
+                request.send(parameter);
+            }
+        }
+        function lunchTask() {
+            window.location = 'www.suancaiyv.top/html/lunchTask.html';
+        }
+    </script>
+    <script>
+        var json = localStorage.getItem('json');
+        parseJson(json);
+    </script>
+</head>
+<body>
+<div align="center">
+    <script>
+        document.write('<span>欢迎你: '+name+'</span>');
+    </script>
+    <br>
+    <span>未提交</span>
+    <br>
+    <table>
+        <script>
+            var str = '';
+            for (i = 0; i < undoTasks.length; ++ i) {
+                str += '<tr>';
+                str += '<td>'+taskUuidAndTaskName[undoTasks[i]]+'</td>';
+                str += '<td>';
+                str += '<input type="file" name="file" id='+"file"+undoTasks[i]+'>';
+                str += '</td>';
+                str += '<td>';
+                str += '<input type="button" value="提交" onclick="upload('+"'"+undoTasks[i]+"'"+')">';
+                str += '</td>';
+                str += '</tr>';
+            }
+            document.write(str);
+        </script>
+    </table>
+    <span>已提交</span>
+    <br>
+    <table>
+        <script>
+            var str = '';
+            for (i = 0; i < doneTasks.length; ++ i) {
+                str += '<tr>';
+                str += '<td>'+taskUuidAndTaskName[doneTasks[i]]+'</td>';
+                str += '<td>';
+                str += '<input type="button" value="下载原文件" onclick="download('+"'"+doneTasks[i]+"'"+')">';
+                str += '<td>';
+                str += '<input type="file" name="file" id='+"file"+doneTasks[i]+'>';
+                str += '</td>';
+                str += '<td>';
+                str += '<input type="button" value="提交" onclick="upload('+"'"+doneTasks[i]+"'"+')">';
+                str += '</td>';
+                str += '</tr>';
+            }
+            document.write(str);
+        </script>
+    </table>
+    <script>
+        if (isCommittee === 1) {
+            document.write('<span>我发布的任务</span>');
+            var str = '<table>';
+            for (i = 0; i < lunchTasks.length; ++ i) {
+                str += '<tr>';
+                str += '<td>'+taskUuidAndTaskName[lunchTasks[i]]+'</td>';
+                str += '<td>';
+                str += '<input type="button" value="查看提交情况" onclick="viewTask('+"'"+lunchTasks[i]+"'"+')">';
+                str += '</td>';
+                str += '<td>';
+                str += '<input type="button" value="删除" onclick="deleteTask('+"'"+lunchTasks[i]+"'"+')">';
+                str += '</td>';
+                str += '</tr>';
+            }
+            str += '</table>';
+            str += '<br>';
+            str += '<input type="button" value="去发布新任务" onclick="lunchTask()">';
+            document.write(str);
+        }
+    </script>
+</div>
+</body>
+</html>

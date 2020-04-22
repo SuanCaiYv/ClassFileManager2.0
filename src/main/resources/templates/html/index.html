@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery.js"></script>
+    <script>
+        f1 = function () {
+            const form1 = document.getElementById('form1');
+            const id_ = form1.elements[0].value;
+            const password_ = form1.elements[1].value;
+            const request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.status === 200 && request.readyState === 4) {
+                    var json = request.responseText;
+                    localStorage.setItem('json', json);
+                    window.location = 'www.suancaiyv.top/html/main.html';
+                }
+            };
+            request.open('POST', 'www.suancaiyv.top:8190/loginIn', true);
+            const parameter = 'id=' + id_ + '&password=' + password_;
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.withCredentials = true;
+            request.send(parameter);
+        }
+    </script>
+</head>
+<body>
+<div align="center">
+    <form action="" method="post" id="form1">
+        <input type="text" name="id">
+        <br>
+        <input type="text" name="password">
+        <br>
+        <input type="button" value="登录" onclick="f1()">
+    </form>
+    <br>
+    <p id="p1"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+server:
+  max-http-header-size: 102400
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 400
+    max-connections: 20000
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-wait: 3000
+        max-idle: 8
+        min-idle: 1
+    timeout: 10
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 4KB
+      max-request-size: 102400MB
+      max-file-size: 102400MB
+  thymeleaf:
+    cache: false
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  profiles:
+    active: dev
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  config-location: classpath:mybatis-config.xml
+
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/classfilemanager2.0
+    username: root
+    password: 461200
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password: 461200
+    timeout: 5000
+server:
+  port: 8190
+basePath: /home/joker/classfilemanager/
+interval: 1
+
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://localhost:3306/classfilemanager
+    username: classfilemanager
+    password: tKhx6atnsp2FWYrA
+server:
+  port: 10086
+basePath: /home/classfilemanager/
+interval: 30

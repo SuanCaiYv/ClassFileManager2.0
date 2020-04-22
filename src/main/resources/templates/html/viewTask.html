@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>检查</title>
+    <script src="js/jquery.js"></script>
+    <script>
+        <!--请不要随意更改变量名-->
+        /**
+         * 用户
+         */
+        var user;
+        /**
+         * 用户id
+         */
+        var id;
+        /**
+         * 用户姓名
+         */
+        var name;
+        /**
+         * 用户密码
+         */
+        var password;
+        /**
+         * 用户姓名
+         */
+        var nickName;
+        /**
+         * 用户邮箱
+         */
+        var email;
+        /**
+         * 用户QQ
+         */
+        var qq;
+        /**
+         * 是否是班委
+         var isCommittee;
+         /**
+         * 任务信息
+         */
+        var taskMessage;
+        /**
+         * 未完成的任务的UUID(数组形式)
+         */
+        var undoTasks;
+        /**
+         * 已完成的任务的UUID(数组形式)
+         */
+        var doneTasks;
+        /**
+         * 发布的任务(数组形式)
+         */
+        var lunchTasks;
+        /**
+         * 任务UUID和任务名映射(Map形式: String-String)
+         */
+        var taskUuidAndTaskName;
+        /**
+         * 任务UUID和当前者上传的文件名的映射(Map形式: String-String)
+         */
+        var taskUuidAndFileName;
+        /**
+         * ID和姓名的映射(Map形式: String-String)
+         */
+        var idAndName;
+        /**
+         * 未完成的任务的UUID和未完成的用户的ID的映射(Map-List)
+         */
+        var taskUuidAndUndoIds;
+        /**
+         * 已完成的任务的UUID和已完成的用户的ID的映射(Map-List)
+         */
+        var taskUuidAndDoneIds;
+
+        /**
+         * 解析json字符串的函数
+         * @param json
+         */
+        function parseJson(json) {
+            var jsonObj = $.parseJSON(json);
+            user = jsonObj.data;
+            taskMessage = jsonObj.addData;
+            id = user.id;
+            name = user.name;
+            password = user.password;
+            nickName = user.nickName;
+            email = user.email;
+            qq = user.qq;
+            isCommittee = user.isCommittee;
+            undoTasks = taskMessage.undoTasks;
+            doneTasks = taskMessage.doneTasks;
+            lunchTasks = taskMessage.lunchTasks;
+            taskUuidAndTaskName = taskMessage.taskUuidAndTaskName;
+            taskUuidAndFileName = taskMessage.taskUuidAndFileName;
+            idAndName = taskMessage.idAndName;
+            taskUuidAndUndoIds = taskMessage.taskUuidAndUndoIds;
+            taskUuidAndDoneIds = taskMessage.taskUuidAndDoneIds;
+        }
+    </script>
+    <script>
+        var json = localStorage.getItem('json');
+        parseJson(json);
+    </script>
+    <script>
+        var taskUuid = localStorage.getItem('taskUuid');
+        function download(id) {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.status === 200 && request.readyState === 4) {
+                    alert('请查收下载！')
+                }
+            };
+            var parameter = 'id='+id+'&taskUuid='+taskUuid;
+            request.open('POST', 'www.suancaiyv.top:8190/file/download', true);
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.withCredentials = true;
+            request.send(parameter);
+        }
+        function downloadAll() {
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.status === 200 && request.readyState === 4) {
+                    alert('请查收下载！')
+                }
+            };
+            var parameter = 'taskUuid='+taskUuid;
+            request.open('POST', 'www.suancaiyv.top:8190/file/downloadAll', true);
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.withCredentials = true;
+            request.send(parameter);
+        }
+    </script>
+</head>
+<body>
+<div align="center">
+    <span style="font-family: 'PingFang SC Bold',serif">未完成</span>
+    <br>
+    <script>
+        var str = '';
+        for (i = 0; i < taskUuidAndUndoIds[taskUuid].length; ++ i) {
+            str += idAndName[taskUuidAndUndoIds[taskUuid][i]];
+            str += '<br>';
+        }
+        document.write(str);
+    </script>
+    <br>
+    <span style="font-family: 'PingFang SC Bold',serif">已完成</span>
+    <br>
+    <script>
+        str = '';
+        for (i = 0; i < taskUuidAndDoneIds[taskUuid].length; ++ i) {
+            str += idAndName[taskUuidAndDoneIds[taskUuid][i]];
+            str += '<br>';
+            str += '<input type="button" value="下载" onclick="download('+"'"+taskUuidAndDoneIds[taskUuid][i]+"'"+')">'
+        }
+        document.write(str);
+    </script>
+    <br>
+    <span style="font-family: 'PingFang SC Bold',serif">下载全部</span>
+    <br>
+    <input type="button" value="打包下载" onclick="downloadAll()">
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.classfilemanager.org.dao.UserMapper">
+    <resultMap id="user" type="com.classfilemanager.org.pojo.User">
+        <id column="id" property="id" jdbcType="VARCHAR" javaType="String"/>
+        <result column="name" property="name" jdbcType="VARCHAR" javaType="String"/>
+        <result column="password" property="password" jdbcType="VARCHAR" javaType="String"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="email" property="email" jdbcType="VARCHAR" javaType="String"/>
+        <result column="qq" property="qq" jdbcType="VARCHAR" javaType="String"/>
+        <result column="undo_task" property="undoTask" jdbcType="VARCHAR" javaType="String"/>
+        <result column="done_task" property="doneTask" jdbcType="VARCHAR" javaType="String"/>
+        <result column="department" property="department" jdbcType="VARCHAR" javaType="String"/>
+        <result column="grade" property="grade" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="classroom" property="classroom" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="is_committee" property="isCommittee" jdbcType="INTEGER" javaType="Integer"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.classfilemanager.org.pojo.User">
+        insert into user (id, name, password, nick_name, email, qq, undo_task, done_task, department, grade, classroom, is_committee) VALUES
+            (#{id}, #{name}, #{password}, #{nickName}, #{email}, #{qq}, #{undoTask}, #{doneTask}, #{department}, #{grade}, #{classroom}, #{isCommittee})
+    </insert>
+    <update id="update" parameterType="com.classfilemanager.org.pojo.User">
+        update user set name = #{name}, password = #{password}, nick_name = #{nickName}, email = #{email},
+            qq = #{qq}, undo_task = #{undoTask}, done_task = #{doneTask}, department = #{department}, grade = #{grade},
+                        classroom = #{classroom}, is_committee = #{isCommittee} where id = #{id}
+    </update>
+    <delete id="delete" parameterType="String">
+        delete from user where id = #{id};
+    </delete>
+    <select id="selectOne" resultType="com.classfilemanager.org.pojo.User" parameterType="String">
+        select * from user where id = #{id}
+    </select>
+    <select id="selectSameClassroom" resultType="com.classfilemanager.org.pojo.User">
+        select * from user where grade = #{grade} and department = #{department} and classroom = #{classroom}
+    </select>
+</mapper>
